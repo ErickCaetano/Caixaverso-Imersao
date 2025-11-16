@@ -2,16 +2,19 @@ using DesafioPerfilInvestidor.DTOs;
 using DesafioPerfilInvestidor.Models;
 namespace DesafioPerfilInvestidor.Services;
 
-public class InvestimentoService : IEmprestimoServico
+public class InvestimentoService : IInvestimentoServico
 {
     public Simulacao SimularInvestimento(SimulacaoRequest DadosSimulacao)
     {
 
         //Simula a busca do produto no banco de dados
 
-        var produtoTeste = DataBase.Produtos.FirstOrDefault(p => p.Tipo == DadosSimulacao.TipoProduto);
+        Produto? produtoTeste = DataBase.Produtos.FirstOrDefault(p => p.Tipo == DadosSimulacao.TipoProduto);
 
-
+        if (produtoTeste == null)
+        {
+            throw new ArgumentException("Produto de investimento não encontrado para o tipo especificado.");
+        }
 
         //Calculo do investimento
         var txJurosMensal = Math.Pow(1.0 + (double)produtoTeste.Rentabilidade / 100.0, 1.0 / 12.0) - 1.0;
@@ -22,27 +25,23 @@ public class InvestimentoService : IEmprestimoServico
 
         DataBase.AdicionarSimulacao(resultado);
 
+        var novoInvestidor = new Investidor (DadosSimulacao.IdCliente);
+
+        if (!DataBase.Investidores.Any(i => i.IdCliente == DadosSimulacao.IdCliente))
+        {
+            DataBase.Investidores.Add(novoInvestidor);
+        }
+        else
+        {
+            var investidorExistente = DataBase.Investidores.First(i => i.IdCliente == DadosSimulacao.IdCliente);
+            investidorExistente.AtualizarPerfil();
+        }
+
+
         //Cria o objeto Simulação para retorno e armazenamento
         return resultado;
          
     }
-
-public List<ProdutoeDiaResponse> produtoeDias()
-    {
-        var lista = new List<ProdutoeDiaResponse>();
-
-// public ProdutoeDiaResponse(string produto, string data, int quantidadeDeSimulacoes, decimal mediaValorFinal)
-
-
-
-        foreach (var sim in DataBase.Simulacoes)
-        {
-
-        }
-        return lista;
-    }
-
-
 
 
 }

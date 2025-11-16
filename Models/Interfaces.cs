@@ -2,7 +2,7 @@ namespace DesafioPerfilInvestidor.Models;
 using DesafioPerfilInvestidor.DTOs;
 
 
-public interface IEmprestimoServico
+public interface IInvestimentoServico
 {
     Simulacao SimularInvestimento(SimulacaoRequest DadosSimulacao);
 }

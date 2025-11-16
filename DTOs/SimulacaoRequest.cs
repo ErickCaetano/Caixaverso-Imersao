@@ -8,7 +8,8 @@ public class SimulacaoRequest
 
     [Required(ErrorMessage = "IdCliente é obrigatório")]
     [Range(1, int.MaxValue, ErrorMessage = "IdCliente deve ser maior que zero")]
-    public int IdCliente { get; set; }
+    [DefaultValue(1)]
+    public int IdCliente { get; set; } = 1;
 
 
     [Required(ErrorMessage = "ValorInvestido é obrigatório")]

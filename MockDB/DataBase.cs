@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.SignalR;
 
 public static class DataBase
 {
-    
+    public static List<Produto> Produtos;
+    public static List<Investidor> Investidores;
+    public static List<Simulacao> Simulacoes;
 
-
-
-    public static List<Produto> Produtos = new List<Produto>
+    static DataBase()
     {
+        Produtos = new List<Produto>{
         new Produto(1, "Produto A", "CDB", 0.12m, "Baixo"),
         new Produto(2, "Produto B", "LCI", 0.10m, "Baixo"),
         new Produto(3, "Produto C", "LCA", 0.11m, "Médio"),
@@ -16,25 +17,22 @@ public static class DataBase
         new Produto(5, "Produto E", "AÇÕES", 0.14m, "Alto")
     };
 
-
-        public static List<Investidor> investidores = new List<Investidor>
+        Investidores = new List<Investidor>
     {
-        new Investidor(1, 50),
-        new Investidor(2, 30),
-        new Investidor(3, 70)
+        new Investidor(1),
+        new Investidor(2),
+        new Investidor(3)
     };
 
-
-    
-
-        public static List<Simulacao> Simulacoes {get;private set;}= new List<Simulacao>();
+        Simulacoes = new List<Simulacao>();
+    }
 
 
-        public static void AdicionarSimulacao(Simulacao simulacao)
-        {
-            simulacao.CadastrarId(Simulacoes.Count + 1);
-            Simulacoes.Add(simulacao);
-        }
+    public static void AdicionarSimulacao(Simulacao simulacao)
+    {
+        simulacao.CadastrarId(Simulacoes.Count + 1);
+        Simulacoes.Add(simulacao);
+    }
 
 
 

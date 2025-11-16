@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 public class InvestimentoController : ControllerBase
 {
     // private readonly AppDbContext _db;
-    private readonly IEmprestimoServico _InvestimentoService;
+    private readonly IInvestimentoServico _InvestimentoService;
 
-    public InvestimentoController(IEmprestimoServico investimentoService)
+    public InvestimentoController(IInvestimentoServico investimentoService)
     {
         //     _db = db;
         _InvestimentoService = investimentoService;
@@ -59,6 +59,11 @@ public class InvestimentoController : ControllerBase
     [HttpGet("simulacoes")]
     public IActionResult ListarHistorico()
     {
+        if (DataBase.Simulacoes.Count == 0)
+        {
+            return NoContent();
+        }
+
         var response = DataBase.Simulacoes.Select(s => new
         {
             id = s.IdSimulacao,
@@ -73,12 +78,18 @@ public class InvestimentoController : ControllerBase
         return Ok(response);
     }
 
+
+
     //3. Valores Simulados por Produto e Dia
     //    GET:api/simulacoes/por-produto-dia
 
     [HttpGet("simulacoes/por-produto-dia")]
     public IActionResult ListarProdutoPorDia()
     {
+        if (DataBase.Simulacoes.Count == 0)
+        {
+            return NoContent();
+        }
         var response = DataBase.Simulacoes.GroupBy(s => new { Produto = s.Produto.Nome, Data = s.DataSimulacao.Date })
                         .Select(g => new
                         {
@@ -89,5 +100,36 @@ public class InvestimentoController : ControllerBase
                         });
         return Ok(response);
     }
+
+
+
+    //4. Dados de Telemetria
+    //    GET:api/telemetria
+
+    [HttpGet("telemetria")]
+    public IActionResult VerTelemetria()
+    {        
+        return Ok("Aguardando implementação de telemetria...");
+    }
+
+
+
+    //5. Perfil de Risco
+    //    GET:api/perfil-risco/{clienteId}
+        [HttpGet("perfil-risco/{clienteId}")]
+    public IActionResult PerfilDeRisco(int clienteId)
+    {
+        var investidor = DataBase.Investidores.Find(i => i.IdCliente == clienteId);
+
+        if (investidor == null)
+            return NotFound();
+        else
+            return Ok(investidor);
+    }
+
+
+
+
+
 
     }
