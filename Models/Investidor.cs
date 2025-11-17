@@ -1,3 +1,8 @@
+using System.Numerics;
+using DesafioPerfilInvestidor.MockDB;
+using DesafioPerfilInvestidor.Services;
+
+
 public class Investidor
 {
     public int IdCliente { get; private set; }
@@ -8,71 +13,59 @@ public class Investidor
     public Investidor(int idCliente)
     {            
         IdCliente = idCliente;
-        AtualizarPerfil();
+        //AtualizarPerfil();
     }
 
 
 
     public void AtualizarPerfil()
     {
-        Pontuacao = CalcularPontuacao();
+        Pontuacao = MotorDeRecomendacao.CalcularPontuacao(IdCliente);
         DefinirPerfilDeRisco(Pontuacao);
     }
 
-        public int CalcularPontuacao()
-    {
-        return 10;
-    }
+    //     public int CalcularPontuacao()
+    // {
+    //     var investimentosCliente = DataBase.Simulacoes
+    //     .Where(s => s.IdCliente == IdCliente)
+    //     .ToList();
 
-//         Decimal pontuacao  = 0m;
-//         int quantidade  = 0;        
-//         decimal volumeInvestido  = 0m;
-//         var simulacoes = DataBase.Simulacoes;
+    //     if (investimentosCliente.Count == 0)
+    //          return 0;
 
-// if (!simulacoes.Any())
-// {
-//     Pontuacao = 0;
-//     PerfilDeRisco = "Desconhecido";
-//     Descricao = "Investidor não classificado";
-//     return;
-// }  
+    //     decimal totalInvestidoRiscoBaixo = 0m;
+    //     decimal totalInvestidoRiscoMedio = 0m;
+    //     decimal totalInvestidoRiscoAlto = 0m;
+    //     decimal somaValoresInvestidos = investimentosCliente.Sum(i => i.ValorInvestido);
         
-// foreach (var simulacao in simulacoes.Where(s => s.IdCliente == IdCliente))
-// {
-//     quantidade++;
-//     volumeInvestido += simulacao.ValorInvestido;
+    //     foreach (var investimento in investimentosCliente)
+    //     {
+    //         switch (investimento.Produto.Risco)
+    //         {
+    //             case "Baixo":
+    //                 totalInvestidoRiscoBaixo += investimento.ValorInvestido;
+    //                 break;
+    //             case "Médio":
+    //                 totalInvestidoRiscoMedio += investimento.ValorInvestido;
+    //                 break;
+    //             case "Alto":
+    //                 totalInvestidoRiscoAlto +=investimento.ValorInvestido;
+    //                 break;
+    //         }
+    //     }
 
-//     switch (simulacao.Produto.Risco)
-//     {
-//         case "Baixo":
-//             pontuacao += 1 * simulacao.ValorInvestido;
-//             break;
-//         case "Médio":
-//             pontuacao += 45 * simulacao.ValorInvestido;
-//             break;
-//         case "Alto":
-//             pontuacao += 100 * simulacao.ValorInvestido;
-//             break;
-//     }
-// }
+    //     decimal pontuacaoponderada = (totalInvestidoRiscoBaixo / somaValoresInvestidos) * 1m +
+    //                                  (totalInvestidoRiscoMedio / somaValoresInvestidos) * 45m +
+    //                                  (totalInvestidoRiscoAlto / somaValoresInvestidos) * 100m;
+    //     int pontuacaoFinal = (int)Math.Round(pontuacaoponderada);
 
-//         if (quantidade > 0 && volumeInvestido > 0)
-//         {
-//             Pontuacao = (int)(pontuacao / (volumeInvestido * quantidade));
-//             DefinirPerfilDeRisco(Pontuacao);
-//         }
-//         else
-//         {
-//             Pontuacao = 0;
-//             PerfilDeRisco = "Desconhecido";
-//             Descricao = "Investidor não classificado";
-//         }
-        
+    //     if (pontuacaoFinal >= 1 && pontuacaoFinal <= 100)
+    //         return pontuacaoFinal;
+    //     else        
+    //         return 0;
+    // }
 
 
-
-
-//     }
     
     private void DefinirPerfilDeRisco(int pontuacao)
     {

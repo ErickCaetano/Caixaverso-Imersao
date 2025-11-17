@@ -2,6 +2,7 @@
 using DesafioPerfilInvestidor.DTOs;
 using DesafioPerfilInvestidor.Models;
 using DesafioPerfilInvestidor.Services;
+using DesafioPerfilInvestidor.MockDB;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]

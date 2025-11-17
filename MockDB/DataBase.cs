@@ -1,11 +1,13 @@
 using DesafioPerfilInvestidor.Models;
 using Microsoft.AspNetCore.SignalR;
+namespace DesafioPerfilInvestidor.MockDB;
 
 public static class DataBase
 {
     public static List<Produto> Produtos;
-    public static List<Investidor> Investidores;
+    
     public static List<Simulacao> Simulacoes;
+    public static List<Investidor> Investidores;
 
     static DataBase()
     {
@@ -17,6 +19,8 @@ public static class DataBase
         new Produto(5, "Produto E", "AÇÕES", 0.14m, "Alto")
     };
 
+        Simulacoes = new List<Simulacao>();
+
         Investidores = new List<Investidor>
     {
         new Investidor(1),
@@ -24,7 +28,7 @@ public static class DataBase
         new Investidor(3)
     };
 
-        Simulacoes = new List<Simulacao>();
+
     }
 
 
@@ -33,10 +37,5 @@ public static class DataBase
         simulacao.CadastrarId(Simulacoes.Count + 1);
         Simulacoes.Add(simulacao);
     }
-
-
-
-
-
 
 }

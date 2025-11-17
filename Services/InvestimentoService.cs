@@ -1,5 +1,6 @@
 using DesafioPerfilInvestidor.DTOs;
 using DesafioPerfilInvestidor.Models;
+using DesafioPerfilInvestidor.MockDB;
 namespace DesafioPerfilInvestidor.Services;
 
 public class InvestimentoService : IInvestimentoServico
@@ -7,7 +8,6 @@ public class InvestimentoService : IInvestimentoServico
     public Simulacao SimularInvestimento(SimulacaoRequest DadosSimulacao)
     {
 
-        //Simula a busca do produto no banco de dados
 
         Produto? produtoTeste = DataBase.Produtos.FirstOrDefault(p => p.Tipo == DadosSimulacao.TipoProduto);
 
@@ -17,7 +17,7 @@ public class InvestimentoService : IInvestimentoServico
         }
 
         //Calculo do investimento
-        var txJurosMensal = Math.Pow(1.0 + (double)produtoTeste.Rentabilidade / 100.0, 1.0 / 12.0) - 1.0;
+        var txJurosMensal = Math.Pow(1.0 + (double)produtoTeste.Rentabilidade, 1.0 / 12.0) - 1.0;
         decimal valorFinal = DadosSimulacao.ValorInvestido * (decimal)Math.Pow(1.0 + txJurosMensal, DadosSimulacao.PrazoMeses);
         decimal rentabilidadeEfetiva = produtoTeste.Rentabilidade;
 
