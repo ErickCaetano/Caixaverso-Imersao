@@ -5,10 +5,10 @@ using DesafioPerfilInvestidor.Services;
 
 public class Investidor
 {
-    public int IdCliente { get; private set; }
-    public string PerfilDeRisco { get; private set; } = "Desconhecido";
-    public int Pontuacao { get; private set; } = 0;
-    public string Descricao { get; private set; } = "Investidor não classificado";
+    public int IdCliente { get; set; }
+    public string PerfilDeRisco { get; set; } = "Desconhecido";
+    public int Pontuacao { get; set; } = 0;
+    public string Descricao { get; set; } = "Investidor não classificado";
     
     public Investidor(int idCliente)
     {            
@@ -18,53 +18,11 @@ public class Investidor
 
 
 
-    public void AtualizarPerfil()
+    public void AtualizarPerfil(int pontuacao)
     {
-        Pontuacao = MotorDeRecomendacao.CalcularPontuacao(IdCliente);
-        DefinirPerfilDeRisco(Pontuacao);
+        Pontuacao = pontuacao;
+        DefinirPerfilDeRisco(pontuacao);
     }
-
-    //     public int CalcularPontuacao()
-    // {
-    //     var investimentosCliente = DataBase.Simulacoes
-    //     .Where(s => s.IdCliente == IdCliente)
-    //     .ToList();
-
-    //     if (investimentosCliente.Count == 0)
-    //          return 0;
-
-    //     decimal totalInvestidoRiscoBaixo = 0m;
-    //     decimal totalInvestidoRiscoMedio = 0m;
-    //     decimal totalInvestidoRiscoAlto = 0m;
-    //     decimal somaValoresInvestidos = investimentosCliente.Sum(i => i.ValorInvestido);
-        
-    //     foreach (var investimento in investimentosCliente)
-    //     {
-    //         switch (investimento.Produto.Risco)
-    //         {
-    //             case "Baixo":
-    //                 totalInvestidoRiscoBaixo += investimento.ValorInvestido;
-    //                 break;
-    //             case "Médio":
-    //                 totalInvestidoRiscoMedio += investimento.ValorInvestido;
-    //                 break;
-    //             case "Alto":
-    //                 totalInvestidoRiscoAlto +=investimento.ValorInvestido;
-    //                 break;
-    //         }
-    //     }
-
-    //     decimal pontuacaoponderada = (totalInvestidoRiscoBaixo / somaValoresInvestidos) * 1m +
-    //                                  (totalInvestidoRiscoMedio / somaValoresInvestidos) * 45m +
-    //                                  (totalInvestidoRiscoAlto / somaValoresInvestidos) * 100m;
-    //     int pontuacaoFinal = (int)Math.Round(pontuacaoponderada);
-
-    //     if (pontuacaoFinal >= 1 && pontuacaoFinal <= 100)
-    //         return pontuacaoFinal;
-    //     else        
-    //         return 0;
-    // }
-
 
     
     private void DefinirPerfilDeRisco(int pontuacao)

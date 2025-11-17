@@ -4,17 +4,18 @@ using DesafioPerfilInvestidor.Models;
 using DesafioPerfilInvestidor.Services;
 using DesafioPerfilInvestidor.MockDB;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
 public class InvestimentoController : ControllerBase
 {
-    // private readonly AppDbContext _db;
+    private readonly AppDbContext _db;
     private readonly IInvestimentoServico _InvestimentoService;
 
-    public InvestimentoController(IInvestimentoServico investimentoService)
+    public InvestimentoController(AppDbContext db,IInvestimentoServico investimentoService)
     {
-        //     _db = db;
+        _db = db;
         _InvestimentoService = investimentoService;
     }
 
@@ -23,10 +24,10 @@ public class InvestimentoController : ControllerBase
     //POST: api/simular-investimento
 
     [HttpPost("simular-investimento")]
-    public IActionResult Simular([FromBody] SimulacaoRequest request)
+    public async Task<IActionResult> Simular([FromBody] SimulacaoRequest request)
     {
 
-        Simulacao resultado = _InvestimentoService.SimularInvestimento(request);
+        Simulacao resultado = await _InvestimentoService.SimularInvestimento(request);
 
 
         var response = new
@@ -57,14 +58,17 @@ public class InvestimentoController : ControllerBase
     //    GET:api/simulacoes
 
     [HttpGet("simulacoes")]
-    public IActionResult ListarHistorico()
+    public async Task<IActionResult> ListarHistorico()
     {
-        if (DataBase.Simulacoes.Count == 0)
-        {
-            return NoContent();
-        }
 
-        var response = DataBase.Simulacoes.Select(s => new
+        var simulacoes = await _db.Simulacoes
+            .Include(s => s.Produto)
+            .ToListAsync();
+
+        if (!simulacoes.Any())
+        return NoContent();
+
+        var response = simulacoes.Select(s => new
         {
             id = s.IdSimulacao,
             clienteId = s.IdCliente,
@@ -84,13 +88,16 @@ public class InvestimentoController : ControllerBase
     //    GET:api/simulacoes/por-produto-dia
 
     [HttpGet("simulacoes/por-produto-dia")]
-    public IActionResult ListarProdutoPorDia()
+    public async Task<IActionResult> ListarProdutoPorDia()
     {
-        if (DataBase.Simulacoes.Count == 0)
-        {
-            return NoContent();
-        }
-        var response = DataBase.Simulacoes.GroupBy(s => new { Produto = s.Produto.Nome, Data = s.DataSimulacao.Date })
+    var simulacoes = await _db.Simulacoes
+        .Include(s => s.Produto)
+        .ToListAsync();
+
+    if (!simulacoes.Any())
+        return NoContent();
+
+        var response = simulacoes.GroupBy(s => new { Produto = s.Produto.Nome, Data = s.DataSimulacao.Date })
                         .Select(g => new
                         {
                             produto = g.Key.Produto,
@@ -117,9 +124,9 @@ public class InvestimentoController : ControllerBase
     //5. Perfil de Risco
     //    GET:api/perfil-risco/{clienteId}
         [HttpGet("perfil-risco/{clienteId}")]
-    public IActionResult PerfilDeRisco(int clienteId)
+    public async Task<IActionResult> PerfilDeRisco(int clienteId)
     {
-        var investidor = DataBase.Investidores.Find(i => i.IdCliente == clienteId);
+        var investidor = await _db.Investidores.FirstOrDefaultAsync(i => i.IdCliente == clienteId);
 
         if (investidor == null)
             return NotFound("Investidor não encontrado.");
@@ -131,7 +138,7 @@ public class InvestimentoController : ControllerBase
     //6. Produtos Recomendados
     //    GET:api/produtos-recomendados/{perfil}
         [HttpGet("produtos-recomendados/{perfil}")]
-    public IActionResult RecomendacaoPerfil(string perfil)
+    public async Task<IActionResult> RecomendacaoPerfil(string perfil)
     {
         if (string.IsNullOrWhiteSpace(perfil))
             return BadRequest("Perfil investidor inválido.");
@@ -140,13 +147,17 @@ public class InvestimentoController : ControllerBase
 
 
         
-        string riscoProduto = perfil == "Conservador" ? "Baixo" : perfil == "Moderado" ? "Médio" : "Alto";
+        string riscoProduto = perfil == "Conservador" ? "Baixo" :
+                              perfil == "Moderado" ? "Médio" : "Alto";
 
-        var response = DataBase.Produtos.FindAll(i => i.Risco == riscoProduto);
-        if (response == null || response.Count == 0)
-            return NotFound();
-        else
-            return Ok(response);
+        var response =await _db.Produtos
+        .Where(i => i.Risco == riscoProduto)
+        .ToListAsync();
+
+        if (!response.Any())
+            return NotFound("Nenhum produto encontrado para o perfil especificado.");
+
+        return Ok(response);
     }
 
 
@@ -155,16 +166,21 @@ public class InvestimentoController : ControllerBase
     //    GET:api/investimentos/{clienteId}
 
     [HttpGet("investimentos/{clienteId}")]
-    public IActionResult ListarInvestimentosPorCliente(int clienteId)
+    public async Task<IActionResult> ListarInvestimentosPorCliente(int clienteId)
     {   
+        var investidor = await _db.Investidores.FirstOrDefaultAsync(i => i.IdCliente == clienteId);
         
-        if (!DataBase.Investidores.Any(i => i.IdCliente == clienteId))
+        if (investidor == null)
         {
             return NotFound("Investidor não encontrado.");
         }
-        var investimentosCliente = DataBase.Simulacoes.Where(s => s.IdCliente == clienteId).ToList();
 
-        if (investimentosCliente == null || investimentosCliente.Count == 0)
+        var investimentosCliente = await _db.Simulacoes
+        .Include(s => s.Produto)
+        .Where(s => s.IdCliente == clienteId)
+        .ToListAsync();
+
+        if (!investimentosCliente.Any())
             return NotFound("Nenhum investimento encontrado para o investidor especificado.");
 
         var response = investimentosCliente.Select(s => new

@@ -4,5 +4,5 @@ using DesafioPerfilInvestidor.DTOs;
 
 public interface IInvestimentoServico
 {
-    Simulacao SimularInvestimento(SimulacaoRequest DadosSimulacao);
+    Task<Simulacao> SimularInvestimento(SimulacaoRequest DadosSimulacao);
 }

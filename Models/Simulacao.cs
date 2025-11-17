@@ -3,14 +3,16 @@ namespace DesafioPerfilInvestidor.Models;
 
 public class Simulacao
 {
-    public int IdSimulacao { get; private set; }
-    public int IdCliente { get; private set; }
-    public Produto Produto { get; private set; }
-    public decimal ValorInvestido { get; private set; }
-    public decimal ValorFinal { get; private set; }
-    public int PrazoMeses { get; private set; }
-    public DateTime DataSimulacao { get; private set; }
-    private decimal RentabilidadeEfetiva;
+    public int IdSimulacao { get; set; }
+    public int IdCliente { get; set; }
+    public  Produto Produto { get; set; } = null!;
+    public decimal ValorInvestido { get; set; }
+    public decimal ValorFinal { get; set; }
+    public int PrazoMeses { get; set; }
+    public DateTime DataSimulacao { get; set; }
+    public decimal RentabilidadeEfetiva;
+
+    public Simulacao(){}
 
     public Simulacao(int idCliente,Produto produto, decimal valorInvestido, decimal valorFinal, decimal rentabilidadeEfetiva, int prazoMeses)
     {

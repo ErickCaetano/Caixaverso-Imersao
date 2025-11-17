@@ -1,19 +1,27 @@
 namespace DesafioPerfilInvestidor.Services;
 
 using DesafioPerfilInvestidor.MockDB;
+using Microsoft.EntityFrameworkCore;
 
-
-
-public static class MotorDeRecomendacao
+public class MotorDeRecomendacao
 {
-    public static int CalcularPontuacao(int idCliente)
+
+    private readonly AppDbContext _db;
+
+    public MotorDeRecomendacao(AppDbContext db)
+    {
+        _db = db;
+    }
+
+    public async Task<int> CalcularPontuacao(int idCliente)
     {
         // return 10;
-        var investimentosCliente = DataBase.Simulacoes
+        var investimentosCliente = await _db.Simulacoes
+        .Include(s => s.Produto)
         .Where(s => s.IdCliente == idCliente)
-        .ToList();
+        .ToListAsync();
 
-        if (investimentosCliente.Count == 0)
+        if (!investimentosCliente.Any())
             return 0;
 
         decimal totalInvestidoRiscoBaixo = 0m;
