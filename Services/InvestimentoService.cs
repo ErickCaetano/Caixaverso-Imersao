@@ -16,6 +16,13 @@ public class InvestimentoService : IInvestimentoServico
     }
     public async Task<Simulacao> SimularInvestimento(SimulacaoRequest DadosSimulacao)
     {
+            if (DadosSimulacao.IdCliente <= 0 || 
+        string.IsNullOrWhiteSpace(DadosSimulacao.TipoProduto) || 
+        DadosSimulacao.ValorInvestido <= 0 || 
+        DadosSimulacao.PrazoMeses <= 0)
+    {
+        throw new ArgumentException("Dados de entrada inválidos. Verifique os parâmetros da simulação.");
+    }
 
         //Buscar o produto de investimento baseado no tipo fornecido
         var produtoTeste = await _db.Produtos

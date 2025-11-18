@@ -15,10 +15,12 @@ public class MotorDeRecomendacao
 
     public async Task<int> CalcularPontuacao(int idCliente)
     {
-        // return 10;
+        var PrazoValidade = 24; //Em meses
+        var DataMaxima = DateTime.Now.AddMonths(-PrazoValidade);
+        
         var investimentosCliente = await _db.Simulacoes
         .Include(s => s.Produto)
-        .Where(s => s.IdCliente == idCliente)
+        .Where(s => s.IdCliente == idCliente && s.DataSimulacao >= DataMaxima)
         .ToListAsync();
 
         if (!investimentosCliente.Any())
