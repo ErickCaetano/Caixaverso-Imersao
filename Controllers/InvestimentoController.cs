@@ -1,10 +1,10 @@
 
 using DesafioPerfilInvestidor.DTOs;
 using DesafioPerfilInvestidor.Models;
-using DesafioPerfilInvestidor.Services;
 using DesafioPerfilInvestidor.MockDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -23,6 +23,7 @@ public class InvestimentoController : ControllerBase
     //1. Solicitação de Simulação de Investimento
     //POST: api/simular-investimento
 
+    [Authorize]
     [HttpPost("simular-investimento")]
     public async Task<IActionResult> Simular([FromBody] SimulacaoRequest request)
     {
@@ -57,6 +58,7 @@ public class InvestimentoController : ControllerBase
     //2. Histórico de Simulações Realizadas
     //    GET:api/simulacoes
 
+    [Authorize]
     [HttpGet("simulacoes")]
     public async Task<IActionResult> ListarHistorico()
     {
@@ -87,6 +89,7 @@ public class InvestimentoController : ControllerBase
     //3. Valores Simulados por Produto e Dia
     //    GET:api/simulacoes/por-produto-dia
 
+    [Authorize]
     [HttpGet("simulacoes/por-produto-dia")]
     public async Task<IActionResult> ListarProdutoPorDia()
     {
@@ -113,6 +116,7 @@ public class InvestimentoController : ControllerBase
     //4. Dados de Telemetria
     //    GET:api/telemetria
 
+    [AllowAnonymous]
     [HttpGet("telemetria")]
     public IActionResult VerTelemetria()
     {        
@@ -123,7 +127,9 @@ public class InvestimentoController : ControllerBase
 
     //5. Perfil de Risco
     //    GET:api/perfil-risco/{clienteId}
-        [HttpGet("perfil-risco/{clienteId}")]
+
+    [Authorize]
+    [HttpGet("perfil-risco/{clienteId}")]
     public async Task<IActionResult> PerfilDeRisco(int clienteId)
     {
         var investidor = await _db.Investidores.FirstOrDefaultAsync(i => i.IdCliente == clienteId);
@@ -137,7 +143,9 @@ public class InvestimentoController : ControllerBase
 
     //6. Produtos Recomendados
     //    GET:api/produtos-recomendados/{perfil}
-        [HttpGet("produtos-recomendados/{perfil}")]
+
+    [AllowAnonymous]
+    [HttpGet("produtos-recomendados/{perfil}")]
     public async Task<IActionResult> RecomendacaoPerfil(string perfil)
     {
         if (string.IsNullOrWhiteSpace(perfil))
@@ -165,6 +173,7 @@ public class InvestimentoController : ControllerBase
     //7. Histórico de Investimentos
     //    GET:api/investimentos/{clienteId}
 
+    [Authorize]
     [HttpGet("investimentos/{clienteId}")]
     public async Task<IActionResult> ListarInvestimentosPorCliente(int clienteId)
     {   

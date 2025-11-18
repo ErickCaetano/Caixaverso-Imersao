@@ -144,3 +144,11 @@ C:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRi
 C:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRisco\bin\Debug\net9.0\runtimes\win-arm64\native\e_sqlite3.dll
 C:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRisco\bin\Debug\net9.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRisco\bin\Debug\net9.0\runtimes\win-x86\native\e_sqlite3.dll
+c:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRisco\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+c:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRisco\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+c:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRisco\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+c:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRisco\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+c:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRisco\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+c:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRisco\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+c:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRisco\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+c:\Users\Erick Caetano\Desktop\CAIXAVERSO\Novo Desafio BackEnd\DesafioPerfildeRisco\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
