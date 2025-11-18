@@ -11,18 +11,31 @@ public class InvestimentoService : IInvestimentoServico
 
     public InvestimentoService(AppDbContext db, MotorDeRecomendacao motor)
     {
-        _db = db;        
+        _db = db;
         _motor = motor;
     }
     public async Task<Simulacao> SimularInvestimento(SimulacaoRequest DadosSimulacao)
     {
-            if (DadosSimulacao.IdCliente <= 0 || 
-        string.IsNullOrWhiteSpace(DadosSimulacao.TipoProduto) || 
-        DadosSimulacao.ValorInvestido <= 0 || 
-        DadosSimulacao.PrazoMeses <= 0)
-    {
-        throw new ArgumentException("Dados de entrada inválidos. Verifique os parâmetros da simulação.");
-    }
+
+
+
+        if (DadosSimulacao.IdCliente <= 0 ||
+    string.IsNullOrWhiteSpace(DadosSimulacao.TipoProduto) ||
+    DadosSimulacao.ValorInvestido <= 0 ||
+    DadosSimulacao.PrazoMeses <= 0)
+        {
+            throw new ArgumentException("Dados de entrada inválidos. Verifique os parâmetros da simulação.");
+        }
+
+        var tipoNormalizado = DadosSimulacao.TipoProduto.Trim().ToUpperInvariant();
+
+        // Verifica se existe no banco
+        var produto = _db.Produtos.FirstOrDefault(p => p.Tipo.ToUpper() == tipoNormalizado);
+
+        if (produto == null)
+        {
+            throw new ArgumentException($"Produto de investimento '{DadosSimulacao.TipoProduto}' não encontrado no banco de dados.");
+        }
 
         //Buscar o produto de investimento baseado no tipo fornecido
         var produtoTeste = await _db.Produtos
@@ -65,10 +78,10 @@ public class InvestimentoService : IInvestimentoServico
         }
 
         await _db.SaveChangesAsync();
-        
+
         return resultado;
 
-        
+
 
     }
 }

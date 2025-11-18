@@ -24,7 +24,7 @@ public class SimulacaoRequest
     public int PrazoMeses { get; set; } = 12;
 
     [Required(ErrorMessage = "TipoProduto é obrigatório")]
-    [RegularExpression("^(CDB|LCI|LCA|FUNDO|AÇÕES)$", ErrorMessage = "TipoProduto deve ser CDB, LCI, LCA, AÇÕES ou FUNDO")]
+    [DefaultValue("CDB")]
     public string TipoProduto { get; set; } = "CDB";
 
 }

@@ -106,6 +106,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 
+app.UseMiddleware<MiddlewareTelemetria>();
 
 app.UseHttpsRedirection();
 
@@ -113,6 +114,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 app.Run();
 

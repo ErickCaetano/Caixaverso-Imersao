@@ -114,14 +114,40 @@ public class InvestimentoController : ControllerBase
 
 
     //4. Dados de Telemetria
-    //    GET:api/telemetria
+    //    GET:api/telemetriaResponse
 
     [AllowAnonymous]
     [HttpGet("telemetria")]
-    public IActionResult VerTelemetria()
-    {        
-        return Ok("Aguardando implementação de telemetria...");
+    public IActionResult VerTelemetria([FromServices] AppDbContext db)
+    { 
+        
+    if (!db.Telemetrias.Any())
+    {
+        return Ok(new {
+            servicos = new List<object>(),
+            periodo = new { inicio = (string?)null, fim = (string?)null }
+        });
     }
+
+    var report = db.Telemetrias
+        .GroupBy(t => t.NomeServico)
+        .Select(g => new
+        {
+            nome = g.Key,
+            quantidadeChamadas = g.Count(),
+            mediaTempoRespostaMs = (int)g.Average(x => x.DuracaoMs)
+        })
+        .ToList();
+
+    var periodo = new
+    {
+        inicio = db.Telemetrias.Min(t => t.DataHora).ToString("yyyy-MM-dd"),
+        fim = db.Telemetrias.Max(t => t.DataHora).ToString("yyyy-MM-dd")
+    };
+
+    return Ok(new { servicos = report, periodo });
+}
+    
 
 
 
