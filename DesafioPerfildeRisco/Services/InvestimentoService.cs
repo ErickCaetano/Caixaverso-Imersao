@@ -15,7 +15,7 @@ public class InvestimentoService : IInvestimentoServico
         _db = db;
         _motor = motor;
     }
-    public async Task<Simulacao> SimularInvestimento(SimulacaoRequest DadosSimulacao)
+    public async Task<Simulacao?> SimularInvestimento(SimulacaoRequest DadosSimulacao)
     {
 
 
@@ -25,37 +25,39 @@ public class InvestimentoService : IInvestimentoServico
     DadosSimulacao.ValorInvestido <= 0 ||
     DadosSimulacao.PrazoMeses <= 0)
         {
-            throw new ArgumentException("Dados de entrada inválidos. Verifique os parâmetros da simulação.");
+            return null;
+            //throw new ArgumentException("Dados de entrada inválidos. Verifique os parâmetros da simulação.");
         }
 
         var tipoNormalizado = DadosSimulacao.TipoProduto.Trim().ToUpperInvariant();
 
         // Verifica se existe no banco
-        var produto = _db.Produtos.FirstOrDefault(p => p.Tipo.ToUpper() == tipoNormalizado);
+        var produto = await _db.Produtos
+        .FirstOrDefaultAsync(p => p.Tipo.ToUpper() == tipoNormalizado);
 
         if (produto == null)
         {
-            throw new ArgumentException($"Produto de investimento '{DadosSimulacao.TipoProduto}' não encontrado no banco de dados.");
+            return null;
         }
 
-        //Buscar o produto de investimento baseado no tipo fornecido
-        var produtoTeste = await _db.Produtos
-        .FirstOrDefaultAsync(p => p.Tipo == DadosSimulacao.TipoProduto);
+        // //Buscar o produto de investimento baseado no tipo fornecido
+        // var produtoTeste = await _db.Produtos
+        // .FirstOrDefaultAsync(p => p.Tipo == DadosSimulacao.TipoProduto);
 
 
-        if (produtoTeste == null)
-        {
-            throw new ArgumentException("Produto de investimento não encontrado para o tipo especificado.");
-        }
+        // if (produtoTeste == null)
+        // {
+        //     throw new ArgumentException("Produto de investimento não encontrado para o tipo especificado.");
+        // }
 
 
 
         //Calculo do investimento
-        var txJurosMensal = Math.Pow(1.0 + (double)produtoTeste.Rentabilidade, 1.0 / 12.0) - 1.0;
+        var txJurosMensal = Math.Pow(1.0 + (double)produto.Rentabilidade, 1.0 / 12.0) - 1.0;
         decimal valorFinal = DadosSimulacao.ValorInvestido * (decimal)Math.Pow(1.0 + txJurosMensal, DadosSimulacao.PrazoMeses);
-        decimal rentabilidadeEfetiva = produtoTeste.Rentabilidade;
+        decimal rentabilidadeEfetiva = produto.Rentabilidade;
 
-        var resultado = new Simulacao(DadosSimulacao.IdCliente, produtoTeste, DadosSimulacao.ValorInvestido, valorFinal, rentabilidadeEfetiva, DadosSimulacao.PrazoMeses);
+        var resultado = new Simulacao(DadosSimulacao.IdCliente, produto, DadosSimulacao.ValorInvestido, valorFinal, rentabilidadeEfetiva, DadosSimulacao.PrazoMeses);
 
         //Armazenar a simulação no banco de dados
         _db.Simulacoes.Add(resultado);

@@ -1,4 +1,5 @@
-namespace DesafioPerfildeRisco.Controller;    
+namespace DesafioPerfildeRisco.Controller;
+
 using DesafioPerfildeRisco.DTOs;
 using DesafioPerfildeRisco.Models;
 using DesafioPerfildeRisco.DbContext;
@@ -15,7 +16,7 @@ public class InvestimentoController : ControllerBase
     private readonly AppDbContext _db;
     private readonly IInvestimentoServico _InvestimentoService;
 
-    public InvestimentoController(AppDbContext db,IInvestimentoServico investimentoService)
+    public InvestimentoController(AppDbContext db, IInvestimentoServico investimentoService)
     {
         _db = db;
         _InvestimentoService = investimentoService;
@@ -23,7 +24,8 @@ public class InvestimentoController : ControllerBase
 
 
     //1. Solicitação de Simulação de Investimento
-    //POST: api/simular-investimento
+
+    //POST: api/Investimento/simular-investimento
 
     [Authorize]
     [HttpPost("simular-investimento")]
@@ -32,7 +34,10 @@ public class InvestimentoController : ControllerBase
         if (request == null)
             return BadRequest("Requisição inválida.");
 
-        Simulacao resultado = await _InvestimentoService.SimularInvestimento(request);
+        var resultado = await _InvestimentoService.SimularInvestimento(request);
+
+        if (resultado == null)
+            return NotFound($"Produto de investimento '{request.TipoProduto}' não encontrado.");
 
         var response = new
         {
@@ -59,7 +64,7 @@ public class InvestimentoController : ControllerBase
 
 
     //2. Histórico de Simulações Realizadas
-    //    GET:api/simulacoes
+    //    GET:api/Investimento/simulacoes
 
     [Authorize]
     [HttpGet("simulacoes")]
@@ -72,7 +77,7 @@ public class InvestimentoController : ControllerBase
 
 
         if (!simulacoes.Any())
-        return NoContent();
+            return NoContent();
 
         var response = simulacoes.Select(s => new
         {
@@ -91,18 +96,18 @@ public class InvestimentoController : ControllerBase
 
 
     //3. Valores Simulados por Produto e Dia
-    //    GET:api/simulacoes/por-produto-dia
+    //    GET:api/Investimento/simulacoes/por-produto-dia
 
     [Authorize]
     [HttpGet("simulacoes/por-produto-dia")]
     public async Task<IActionResult> ListarProdutoPorDia()
     {
-    var simulacoes = await _db.Simulacoes
-        .Include(s => s.Produto)
-        .ToListAsync();
+        var simulacoes = await _db.Simulacoes
+            .Include(s => s.Produto)
+            .ToListAsync();
 
-    if (!simulacoes.Any())
-        return NoContent();
+        if (!simulacoes.Any())
+            return NoContent();
 
         var response = simulacoes.GroupBy(s => new { Produto = s.Produto.Nome, Data = s.DataSimulacao.Date })
                         .Select(g => new
@@ -118,45 +123,46 @@ public class InvestimentoController : ControllerBase
 
 
     //4. Dados de Telemetria
-    //    GET:api/telemetriaResponse
+    //    GET:api/Investimento/telemetria
 
     [AllowAnonymous]
     [HttpGet("telemetria")]
     public IActionResult VerTelemetria([FromServices] AppDbContext db)
-    { 
-        
-    if (!db.Telemetrias.Any())
     {
-        return Ok(new {
-            servicos = new List<object>(),
-            periodo = new { inicio = (string?)null, fim = (string?)null }
-        });
+
+        if (!db.Telemetrias.Any())
+        {
+            return Ok(new
+            {
+                servicos = new List<object>(),
+                periodo = new { inicio = (string?)null, fim = (string?)null }
+            });
+        }
+
+        var report = db.Telemetrias
+            .GroupBy(t => t.NomeServico)
+            .Select(g => new
+            {
+                nome = g.Key,
+                quantidadeChamadas = g.Count(),
+                mediaTempoRespostaMs = (int)g.Average(x => x.DuracaoMs)
+            })
+            .ToList();
+
+        var periodo = new
+        {
+            inicio = db.Telemetrias.Min(t => t.DataHora).ToString("yyyy-MM-dd"),
+            fim = db.Telemetrias.Max(t => t.DataHora).ToString("yyyy-MM-dd")
+        };
+
+        return Ok(new { servicos = report, periodo });
     }
 
-    var report = db.Telemetrias
-        .GroupBy(t => t.NomeServico)
-        .Select(g => new
-        {
-            nome = g.Key,
-            quantidadeChamadas = g.Count(),
-            mediaTempoRespostaMs = (int)g.Average(x => x.DuracaoMs)
-        })
-        .ToList();
-
-    var periodo = new
-    {
-        inicio = db.Telemetrias.Min(t => t.DataHora).ToString("yyyy-MM-dd"),
-        fim = db.Telemetrias.Max(t => t.DataHora).ToString("yyyy-MM-dd")
-    };
-
-    return Ok(new { servicos = report, periodo });
-}
-    
 
 
 
     //5. Perfil de Risco
-    //    GET:api/perfil-risco/{clienteId}
+    //    GET:api/Investimento/perfil-risco/{clienteId}
 
     [Authorize]
     [HttpGet("perfil-risco/{clienteId}")]
@@ -172,7 +178,7 @@ public class InvestimentoController : ControllerBase
 
 
     //6. Produtos Recomendados
-    //    GET:api/produtos-recomendados/{perfil}
+    //    GET:api/Investimento/produtos-recomendados/{perfil}
 
     [AllowAnonymous]
     [HttpGet("produtos-recomendados/{perfil}")]
@@ -180,16 +186,16 @@ public class InvestimentoController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(perfil))
             return BadRequest("Perfil investidor inválido.");
-            
+
         if (perfil != "Conservador" && perfil != "Moderado" && perfil != "Agressivo")
             return BadRequest("Perfil investidor inválido.");
 
 
-        
+
         string riscoProduto = perfil == "Conservador" ? "Baixo" :
                               perfil == "Moderado" ? "Médio" : "Alto";
 
-        var response =await _db.Produtos
+        var response = await _db.Produtos
         .Where(i => i.Risco == riscoProduto)
         .ToListAsync();
 
@@ -202,14 +208,14 @@ public class InvestimentoController : ControllerBase
 
 
     //7. Histórico de Investimentos
-    //    GET:api/investimentos/{clienteId}
+    //    GET:api/Investimento/investimentos/{clienteId}
 
     [Authorize]
     [HttpGet("investimentos/{clienteId}")]
     public async Task<IActionResult> ListarInvestimentosPorCliente(int clienteId)
-    {   
+    {
         var investidor = await _db.Investidores.FirstOrDefaultAsync(i => i.IdCliente == clienteId);
-        
+
         if (investidor == null)
         {
             return NotFound("Investidor não encontrado.");
@@ -228,18 +234,10 @@ public class InvestimentoController : ControllerBase
             id = s.IdSimulacao,
             tipo = s.Produto.Tipo,
             valor = s.ValorInvestido,
-            rentabilidade = s.RentabilidadeEfetiva,
+            rentabilidade = Math.Round(s.RentabilidadeEfetiva, 2),
             data = s.DataSimulacao.ToString("yyyy-MM-dd")
         });
 
         return Ok(response);
- 
     }
-
-
-
-
-
-
-
-    }
+}

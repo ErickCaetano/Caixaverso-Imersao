@@ -9,7 +9,7 @@ public class Simulacao
     public decimal ValorFinal { get; set; }
     public int PrazoMeses { get; set; }
     public DateTime DataSimulacao { get; set; }
-    public decimal RentabilidadeEfetiva;
+    public decimal RentabilidadeEfetiva { get; set; }
 
     public Simulacao() { }
 
