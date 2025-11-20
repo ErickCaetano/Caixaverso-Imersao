@@ -11,7 +11,7 @@ O projeto é uma API dividida em models, services, controllers, data e dto.
 ## Tecnologias:
 - .NET 9
 - Entity Framework Core
-- SQL Server
+- SQLite
 - Docker & Docker Compose
 - xUnit (testes unitários)
 
@@ -26,7 +26,7 @@ dotnet run --project DesafioPerfildeRisco
 
 ### Via Docker
 ```bash
-docker-compose up --build.
+docker-compose up --build
 ```
 
 **API disponível em: http://localhost:5260/swagger/index.html**
@@ -327,6 +327,7 @@ Repositório público: [https://github.com/ErickCaetano/Caixaverso-Imersao]
 Projeto realizado de acordo com os requisitos por:
 
 Erick Caetano de Oliveira Bastos
+
 VIVAR AG3390 - Sarapuí, C158571
 
 ## Observações
