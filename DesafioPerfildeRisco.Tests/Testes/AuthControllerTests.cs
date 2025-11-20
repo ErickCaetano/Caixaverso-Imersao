@@ -1,10 +1,11 @@
+namespace DesafioPerfildeRisco.Tests;
+
 using DesafioPerfildeRisco.Controller;
 using DesafioPerfildeRisco.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
-namespace DesafioPerfildeRisco.Tests
-{
+
     public class AuthControllerTests
     {
         [Fact]
@@ -41,5 +42,5 @@ namespace DesafioPerfildeRisco.Tests
         }
 
     }
-}
+
 

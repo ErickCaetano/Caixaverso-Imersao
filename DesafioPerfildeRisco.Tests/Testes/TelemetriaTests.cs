@@ -1,7 +1,7 @@
+namespace DesafioPerfildeRisco.Tests;
 using Xunit;
 using DesafioPerfildeRisco.Models;
 
-namespace DesafioPerfildeRisco.Tests;
 
 public class TelemetriaTests
 {

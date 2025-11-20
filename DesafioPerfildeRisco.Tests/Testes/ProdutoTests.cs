@@ -1,4 +1,4 @@
-namespace DesafioPerfildeRisco.Testes;
+namespace DesafioPerfildeRisco.Tests;
 using Xunit;
 using DesafioPerfildeRisco.Models;
 using DesafioPerfildeRisco.Services;

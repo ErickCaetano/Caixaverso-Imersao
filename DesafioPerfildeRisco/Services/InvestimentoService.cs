@@ -1,10 +1,9 @@
+namespace DesafioPerfildeRisco.Services;
+
 using DesafioPerfildeRisco.DTOs;
 using DesafioPerfildeRisco.Models;
 using DesafioPerfildeRisco.DbContext;
-
-
 using Microsoft.EntityFrameworkCore;
-namespace DesafioPerfildeRisco.Services;
 
 public class InvestimentoService : IInvestimentoServico
 {
