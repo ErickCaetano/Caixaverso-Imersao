@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "5260:80"          # acessa em http://localhost:5260
+    volumes:
+      - ./DesafioPerfildeRisco/Data:/app/Data
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80

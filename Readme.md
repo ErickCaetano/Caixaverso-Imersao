@@ -26,27 +26,27 @@ dotnet run --project DesafioPerfildeRisco
 
 ### Via Docker
 ```bash
-docker-compose up --build. (Ainda a implementar)
+docker-compose up --build.
 ```
 
-
+**API disponível em: http://localhost:5260/swagger/index.html**
 
 
 ## Endpoints:
 
-API disponível em: http://localhost:5000/
+Lista Resumida:
+
+- **POST** /api/Investimento/simular-investimento
+- **GET** /api/Investimento/simulacoes
+- **GET** /api/Investimento/simulacoes/por-produto-dia
+- **GET** /api/Investimento/telemetria
+- **GET** /api/Investimento/perfil-risco/{clienteId}
+- **GET** /api/Investimento/produtos-recomendados/{perfil}
+- **GET** /api/Investimento/investimentos/{clienteId}
 
 
-**POST** /api/Investimento/simular-investimento
-**GET** /api/Investimento/simulacoes
-**GET** /api/Investimento/simulacoes/por-produto-dia
-**GET** /api/Investimento/telemetria
-**GET** /api/Investimento/perfil-risco/{clienteId}
-**GET** /api/Investimento/produtos-recomendados/{perfil}
-**GET** /api/Investimento/investimentos/{clienteId}
 
-
-
+Detalhamento:
 
 ### **POST** /api/Investimento/simular-investimento
 
@@ -321,7 +321,7 @@ A partir da pontuação é atribuido, no model investidor, um perfil de risco en
 Foi utilizado o git para versionamento, e o relatorio de commits pode ser encontrado no diretorio principal.
 
 ## Github
-O projeto por ser encontrado no git publico "[Link](https://github.com/ErickCaetano/Caixaverso-Imersao)"
+Repositório público: [https://github.com/ErickCaetano/Caixaverso-Imersao]
 
 ## Autor
 Projeto realizado de acordo com os requisitos por:
