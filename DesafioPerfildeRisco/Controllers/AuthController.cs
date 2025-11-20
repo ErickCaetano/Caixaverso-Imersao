@@ -13,12 +13,18 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     [AllowAnonymous]
     public IActionResult Login([FromBody] LoginRequest request)
-    {
+    {  
+
+        if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
+            return BadRequest("Usuário e senha são obrigatórios");
+
+
+
         if (request.Username == "admin" && request.Password == "123")
         {
             var token = TokenService.GenerateToken(request.Username, "admin");
             return Ok(new { token });
         }
-        return Unauthorized();
+        return Unauthorized("Credenciais inválidas");
     }
 }

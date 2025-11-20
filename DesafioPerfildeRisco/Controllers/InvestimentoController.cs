@@ -29,9 +29,10 @@ public class InvestimentoController : ControllerBase
     [HttpPost("simular-investimento")]
     public async Task<IActionResult> Simular([FromBody] SimulacaoRequest request)
     {
+        if (request == null)
+            return BadRequest("Requisição inválida.");
 
         Simulacao resultado = await _InvestimentoService.SimularInvestimento(request);
-
 
         var response = new
         {
@@ -68,6 +69,7 @@ public class InvestimentoController : ControllerBase
         var simulacoes = await _db.Simulacoes
             .Include(s => s.Produto)
             .ToListAsync();
+
 
         if (!simulacoes.Any())
         return NoContent();
@@ -178,6 +180,7 @@ public class InvestimentoController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(perfil))
             return BadRequest("Perfil investidor inválido.");
+            
         if (perfil != "Conservador" && perfil != "Moderado" && perfil != "Agressivo")
             return BadRequest("Perfil investidor inválido.");
 
