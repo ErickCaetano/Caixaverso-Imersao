@@ -12,6 +12,7 @@ O projeto é uma API dividida em models, services, controllers, data e dto.
 - .NET 9
 - Entity Framework Core
 - SQLite
+- JWT
 - Docker & Docker Compose
 - xUnit (testes unitários)
 
@@ -31,10 +32,17 @@ docker-compose up --build
 
 **API disponível em: http://localhost:5260/swagger/index.html**
 
+## Auntenticação
+Para utilizar a API é necessário autenticar usuario e senha com Antenticação JWT.
+Utilizando o Endpoint Auth, já configurado com a senha correta para facilitar os testes.
+Copiar o Token gerado (sem aspas) e acionar o botão Authorize no Swwager.
+Todos os Endpoints Exceto Auth só podem ser acessados com autorização.
 
 ## Endpoints:
 
-Lista Resumida:
+### Lista Resumida:
+
+- **POST** /api/Auth/login
 
 - **POST** /api/Investimento/simular-investimento
 - **GET** /api/Investimento/simulacoes
@@ -46,9 +54,32 @@ Lista Resumida:
 
 
 
-Detalhamento:
+### Detalhamento:
 
-### **POST** /api/Investimento/simular-investimento
+#### **POST** /api/Auth/login
+
+Recebe os dados de usuário e senha e, caso corretos, retorna um token de autenticação.
+Por default preenchido com "admin" e "123", basta utilizar.
+
+Exemplo
+Request:
+
+```json
+{
+  "username": "admin",
+  "password": "123"
+}
+```
+Response:
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImV4cCI6MTc2MzcyODU2OCwiaXNzIjoibWV1U2lzdGVtYSIsImF1ZCI6Im1ldVNpc3RlbWEifQ.XsTvIBpXZ4FSwxthowAgqESngt07v6AT7HztorQMmDE"
+}
+```
+
+
+#### **POST** /api/Investimento/simular-investimento
 
 Realiza a simulação de investimentos baseado nos dados entregues na request.
 Exemplo:
@@ -83,7 +114,7 @@ Response:
 }
 ```
 
-### **GET** /api/Investimento/simulacoes
+#### **GET** /api/Investimento/simulacoes
 
 Realiza a consulta de todas as simulações efetuadas.
 Exemplo:
@@ -113,7 +144,7 @@ Response:
 ]
 ```
 
-### **GET** /api/Investimento/simulacoes/por-produto-dia
+#### **GET** /api/Investimento/simulacoes/por-produto-dia
 
 Lista a quantidade de simulações por tipo de produto e data da simulação.
 Exemplo:
@@ -144,7 +175,7 @@ Response:
 ```
 
 
-### **GET** /api/Investimento/telemetria
+#### **GET** /api/Investimento/telemetria
 
 Retorna dos dados de telemetria com volumes e tempo de resposta para cada serviço.
 Exemplo:
@@ -202,7 +233,7 @@ Response:
 }
 ```
 
-### **GET** /api/Investimento/perfil-risco/{clienteId}
+#### **GET** /api/Investimento/perfil-risco/{clienteId}
 
 Retorna o perfil de risco de determinado investidor.
 Exemplo:
@@ -218,7 +249,7 @@ Response:
 }
 ```
 
-### **GET** /api/Investimento/produtos-recomendados/{perfil}
+#### **GET** /api/Investimento/produtos-recomendados/{perfil}
 
 Retorna os produtos recomendados para determinado perfil de risco.
 Exemplo:
@@ -250,7 +281,7 @@ Response:
 ]
 ```
 
-### **GET** /api/Investimento/investimentos/{clienteId}
+#### **GET** /api/Investimento/investimentos/{clienteId}
 
 Retorna os investimentos (1*) de determinado investidor.
 Exemplo:
@@ -294,6 +325,7 @@ Response:
   }
 ]
 ```
+
 ## Testes
 
 Os testes unitários cobrem:
